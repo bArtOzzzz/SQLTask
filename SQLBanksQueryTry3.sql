@@ -18,12 +18,12 @@ CREATE TABLE BankInfo
 )
 GO
 INSERT BankInfo
-	  select 1, 'Альфа-Банк', 1000500
-union select 2, 'Белинвестбанк', 190000.23
-union select 3, 'Технобанк', 785000.45
-union select 4, 'БелВЭБ', 123123123.43
-union select 5, 'МТБанк', 4587555
-union select 6, 'Беларусьбанк', 800800
+	  select 1, 'Alpha-Bank', 1000500
+union select 2, 'Belinvestbank', 190000.23
+union select 3, 'Technobank', 785000.45
+union select 4, 'BelWeb', 123123123.43
+union select 5, 'MTBank', 4587555
+union select 6, 'Belarusbank', 800800
 GO
 CREATE TABLE BankBranches
 (
@@ -33,31 +33,31 @@ CREATE TABLE BankBranches
 )
 GO
 INSERT BankBranches
-	  select 1, 'Гомель'
-union select 2, 'Гомель'
-union select 3, 'Гомель'
-union select 4, 'Гомель'
-union select 5, 'Гомель'
-union select 6, 'Гомель'
+	  select 1, 'Gomel'
+union select 2, 'Gomel'
+union select 3, 'Gomel'
+union select 4, 'Gomel'
+union select 5, 'Gomel'
+union select 6, 'Gomel'
 
-union select 1, 'Брест'
-union select 2, 'Брест'
-union select 3, 'Брест'
+union select 1, 'Brest'
+union select 2, 'Brest'
+union select 3, 'Brest'
 
-union select 4, 'Гродно'
-union select 5, 'Гродно'
-union select 1, 'Гродно'
-union select 3, 'Гродно'
+union select 4, 'Grodno'
+union select 5, 'Grodno'
+union select 1, 'Grodno'
+union select 3, 'Grodno'
 
-union select 1, 'Могилев'
-union select 2, 'Могилев'
-union select 3, 'Могилев'
-union select 4, 'Могилев'
-union select 5, 'Могилев'
-union select 6, 'Могилев'
+union select 1, 'Mogilev'
+union select 2, 'Mogilev'
+union select 3, 'Mogilev'
+union select 4, 'Mogilev'
+union select 5, 'Mogilev'
+union select 6, 'Mogilev'
 
-union select 5, 'Витебск'
-union select 6, 'Витебск'
+union select 5, 'Vitebsk'
+union select 6, 'Vitebsk'
 GO
 CREATE TABLE UserCardInfo
 (
@@ -69,23 +69,23 @@ CREATE TABLE UserCardInfo
 )
 GO
 INSERT UserCardInfo
-	  select 1, 1, 'Анастасия', 100.25, null
-union select 2, 2, 'Анастасия', 125, null
+	  select 1, 1, 'Anastasia', 100.25, null
+union select 2, 2, 'Anastasia', 125, null
 
-union select 3, 2, 'Лев', 10.20, null
+union select 3, 2, 'Lev', 10.20, null
 
-union select 4, 3, 'Анна', 65.90, null
-union select 5, 3, 'Анна', 0.50, null
-union select 6, 4, 'Анна', 230.90, null
-union select 7, 5, 'Анна', 115.45, null
+union select 4, 3, 'Anna', 65.90, null
+union select 5, 3, 'Anna', 0.50, null
+union select 6, 4, 'Anna', 230.90, null
+union select 7, 5, 'Anna', 115.45, null
 
-union select 8, 6, 'Мария', 230.95, null
-union select 9, 5, 'Мария', 55.55, null
-union select 10, 5, 'Мария', 1100,  null
+union select 8, 6, 'Maria', 230.95, null
+union select 9, 5, 'Maria', 55.55, null
+union select 10, 5, 'Maria', 1100,  null
 
-union select 11, 4, 'Александр', 2000.15, null
-union select 12, 6, 'Александр', 1340.40, null
-union select 13, 2, 'Александр', 2022, null
+union select 11, 4, 'Alexander', 2000.15, null
+union select 12, 6, 'Alexander', 1340.40, null
+union select 13, 2, 'Alexander', 2022, null
 GO
 CREATE TABLE UserAccountInfo
 (
@@ -97,48 +97,48 @@ CREATE TABLE UserAccountInfo
 )
 GO
 INSERT UserAccountInfo
-	  select 1, 'Anastasiya', 'Worker', 100.25, null
-union select 2, 'Anastasiya', 'Worker', 150, null
+	  select 1, 'Anastasiya@gmail.com', 'Worker', 100.25, null
+union select 2, 'Anastasiya@gmail.com', 'Worker', 150, null
 
-union select 3, 'Lev', 'Pensioner', 100.75, null
+union select 3, 'Lev@gmail.com', 'Pensioner', 100.75, null
 
-union select 4, 'Anna', 'Disable', 65.90, null
-union select 5, 'Anna', 'Disable', 0.50, null
-union select 6, 'Anna', 'Disable', 730.90, null
-union select 7, 'Anna', 'Disable', 190, null
+union select 4, 'Anna@gmail.com', 'Disable', 65.90, null
+union select 5, 'Anna@gmail.com', 'Disable', 0.50, null
+union select 6, 'Anna@gmail.com', 'Disable', 730.90, null
+union select 7, 'Anna@gmail.com', 'Disable', 190, null
 
-union select 8, 'Maria', 'Student', 275.45, null
-union select 9, 'Maria', 'Student', 55.55, null
-union select 10, 'Maria', 'Student', 1500, null
+union select 8, 'Maria@gmail.com', 'Student', 275.45, null
+union select 9, 'Maria@gmail.com', 'Student', 55.55, null
+union select 10, 'Maria@gmail.com', 'Student', 1500, null
 
-union select 11, 'Alexander', 'Worker', 2022.15, null
-union select 12, 'Alexander', 'Worker', 1765.35, null
-union select 13, 'Alexander', 'Worker', 2022, null
+union select 11, 'Alexander@gmail.com', 'Worker', 2022.15, null
+union select 12, 'Alexander@gmail.com', 'Worker', 1765.35, null
+union select 13, 'Alexander@gmail.com', 'Worker', 2022, null
 
-----------------------------------------------ЗАПРОС-1----------------------------------------------
---Выводит список банков у которых есть филиалы в Городе Х
+----------------------------------------------Query-1----------------------------------------------
+--Displays a list of banks that have a branch in city X
 GO
 SELECT BankName, City 
 FROM BankInfo RIGHT JOIN BankBranches ON BankInfo.BankId = BankBranches.BankId 
-WHERE City = 'Брест' 
+WHERE City = 'Brest' 
 ORDER BY BankName
 
-----------------------------------------------ЗАПРОС-2----------------------------------------------
---Выводит список карточек с указанием имени владельца, баланса и названия банка
+----------------------------------------------Query-2----------------------------------------------
+--Displays a list of cards indicating the name of the owner, balance and the name of the bank
 GO
 SELECT CardId, BankInfo.BankId, UserCardName, BankName, CardBalance 
 FROM UserCardInfo LEFT JOIN BankInfo ON UserCardInfo.BankId = BankInfo.BankId
 ORDER BY UserCardName
 
-----------------------------------------------ЗАПРОС-3----------------------------------------------
---Выводит список банковских аккаунтов у которых баланс не совпадает с суммой баланса по карточке и показывает разность
+----------------------------------------------Query-3----------------------------------------------
+--Displays a list of bank accounts where balance doesn't match the sum of the card balance and shows the difference
 GO
 SELECT UserAccountName, CardBalance, AccountBalance, (AccountBalance - CardBalance) DifferenceVal 
 FROM UserAccountInfo INNER JOIN UserCardInfo ON CardId = AccountId 
 WHERE AccountBalance != CardBalance
 
-----------------------------------------------ЗАПРОС-4----------------------------------------------
---Выводит количество банковских карточек для каждого социального статуса: РЕАЛИЗАЦИЯ GROUP BY
+----------------------------------------------Query-4----------------------------------------------
+--Display the number of the bank cards for each social status: Group by
 GO
 SELECT SocialStatus, COUNT(SocialStatus) CountCards 
 FROM UserAccountInfo 
@@ -146,7 +146,7 @@ WHERE SocialStatus IS NOT NULL
 GROUP BY SocialStatus 
 ORDER BY CountCards DESC
 
---Выводит количество банковских карточек для каждого социального статуса: РЕАЛИЗАЦИЯ ПОДЗАПРОСОМ
+--Display the number of the bank cards for each social status: Subquery
 GO
 SELECT SocialStatus, COUNT(SocialStatus) CountCards
 FROM
@@ -158,8 +158,8 @@ FROM
 GROUP BY SocialStatus 
 ORDER BY CountCards DESC
 
-----------------------------------------------ЗАПРОС-5----------------------------------------------
---Добавление по 10$ на каждый банковский аккаунт для определенного социального статуса
+----------------------------------------------Query-5----------------------------------------------
+--Add 10$ for each bank account for a special social status
 GO
 CREATE PROCEDURE AddTenDollars 
 (
@@ -174,15 +174,15 @@ END
 GO
 EXEC AddTenDollars 'Student', 30
 
-----------------------------------------------ЗАПРОС-6----------------------------------------------
---Выводит список доступных средств для каждого клиента для перевода денежных средств на любую из карт
---Доступная сумма перевода для каждого аккуанта нарастающим итогом
+----------------------------------------------Query-6----------------------------------------------
+--Displays a list of available funds for each client to transfer funds to any card
+--Available transfer amount for each account on an accrual basis
 GO
 SELECT UserAccountName, AccountBalance, CardBalance, sum(AccountBalance - CardBalance) OVER(PARTITION BY UserAccountName ORDER BY CardBalance DESC) AvailableTransferAmount
 FROM UserAccountInfo INNER JOIN UserCardInfo ON CardId = AccountId
 
-----------------------------------------------ЗАПРОС-7----------------------------------------------
---Процедура, которая безопасно переводит деньги со счета на карту этого аккаунта используя транзакцию
+----------------------------------------------Query-7----------------------------------------------
+--Procedure that safely transfer money from an account to a card of this account using transaction
 GO
 CREATE PROCEDURE TransactionProcedure
 (
@@ -209,12 +209,12 @@ END CATCH
 GO
 EXEC TransactionProcedure 2, 500
 
-----------------------------------------------ЗАПРОС-8----------------------------------------------
------------------------------------------------------Триггер для карты-----------------------------------------------------
+----------------------------------------------Query-8----------------------------------------------
+-----------------------------------------------------Trigger for card-----------------------------------------------------
 GO
 CREATE TRIGGER UserCardsTrigger ON UserCardInfo
 AFTER INSERT, UPDATE, DELETE AS
----------------------------Выбирается-id-карты-для-транзакции
+---------------------------id of card for transaction--------
 DECLARE @Id int = 1
 -------------------------------------------------------------
 	IF EXISTS
@@ -244,11 +244,11 @@ END
 ELSE
 UPDATE UserCardInfo SET CardBalance = TotalCardsBalance WHERE CardId = @Id;
 
------------------------------------------------------Триггер для аккаунта-----------------------------------------------------
+-----------------------------------------------------Trigger for account-----------------------------------------------------
 GO
 CREATE TRIGGER UserAccountsTrigger ON UserAccountInfo
 AFTER INSERT, UPDATE, DELETE AS
----------------------------Выбирается-id-карты-для-транзакции
+---------------------------id of card for transaction--------
 DECLARE @Id int = 1
 -------------------------------------------------------------
 	IF EXISTS
@@ -278,18 +278,16 @@ END
 ELSE
 UPDATE UserAccountInfo SET AccountBalance = TotalAccountBalance WHERE AccountId = @Id;
 
-------------------------------------------------ТЕСТЫ ДЛЯ ТРИГГЕРОВ---------------------------------------------
+------------------------------------------------Tests for trigger---------------------------------------------
 
---Для карты
---Иммитация транзакции. Поступление или снятие денежных средств на карту
+--Immitation of transaction for card
 DECLARE @CardBalance decimal(6,2) = -100
 UPDATE UserCardInfo  SET TotalCardsBalance = CardBalance + @CardBalance WHERE CardId = 1
 
---Для аккаунта
---Иммитация транзакции. Поступление или снятие денежных средств с аккаунта
+--Immitation of transaction for account
 DECLARE @AccountBalance decimal(6,2) = 100
 UPDATE UserAccountInfo  SET TotalAccountBalance = AccountBalance + @AccountBalance WHERE AccountId = 1
 
---Вывод таблицы
+--Table output
 SELECT CardId, UserCardName, CardBalance, TotalCardsBalance , SocialStatus, AccountBalance, TotalAccountBalance
 FROM UserCardInfo INNER JOIN UserAccountInfo ON CardId = AccountId
