@@ -1,47 +1,61 @@
 -------------------------------------------------------NEW STRUCTURES OF TABLES-------------------------------------------------------
 CREATE TABLE BankInfo
 (
-	BankId int primary key,
+	BankId int not null,
 	BankName varchar(55),
+
+	PRIMARY KEY (BankId)
 )
 
 CREATE TABLE BankBranches
 (
 	BankId int,
-)
+	BankAdress varchar(125),
 
-CREATE TABLE City
-(
-	CityId int,
-	City varchar(125),
-)
-
-CREATE TABLE CardInfo
-(
-	AccountId int,
-	CardId int,
-	CardBalance decimal(6,2)
-)
-
-CREATE TABLE Account
-(
-	BankId int,
-	UserId int,
-	AccountId int primary key,
-	AccountName varchar(125),
-	AccountBalance decimal(6,2)
+	FOREIGN KEY (BankId) REFERENCES BankInfo(BankId)
 )
 
 CREATE TABLE UserInfo
 (
-	UserId int,
+	UserId int not null,
 	CityId int,
 	SocialStatus varchar(125),
 	UserName varchar(125),
 	Age int,
+
+	PRIMARY KEY (UserId)
 )
-GO
-SELECT  FROM Account
+
+CREATE TABLE City
+(
+	CityId int not null,
+	City varchar(125),
+
+	PRIMARY KEY (CityId)
+)
+CREATE TABLE Account
+(
+	AccountId int not null,
+	BankId int,
+	UserId int,
+	--CardId int,
+	AccountName varchar(125),
+	AccountBalance decimal(6,2),
+
+	PRIMARY KEY (AccountId),
+	FOREIGN KEY (BankId) REFERENCES BankInfo(BankId),
+	FOREIGN KEY (UserId) REFERENCES UserInfo(UserId),
+	--FOREIGN KEY (CardId) REFERENCES CardInfo(CardId),
+)
+CREATE TABLE CardInfo
+(
+	CardId int not null,
+	AccountId int,
+	CardBalance decimal(6,2),
+
+	PRIMARY KEY (CardId),
+	FOREIGN KEY (AccountId) REFERENCES Account(AccountId)
+)
 
 --------------------------------------------------Query-1----------------------------------------------
 ------Displays a list of banks that have a branch in city X
