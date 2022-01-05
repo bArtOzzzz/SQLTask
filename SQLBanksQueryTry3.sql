@@ -1,59 +1,71 @@
 -------------------------------------------------------NEW STRUCTURES OF TABLES-------------------------------------------------------
 CREATE TABLE BankInfo
 (
-	BankId int,
+	BankId int primary key,
 	BankName varchar(55),
 )
+
 CREATE TABLE BankBranches
 (
 	BankId int,
+)
+
+CREATE TABLE City
+(
+	CityId int,
 	City varchar(125),
 )
+
 CREATE TABLE CardInfo
 (
-	BankId int,
+	AccountId int,
 	CardId int,
 	CardBalance decimal(6,2)
 )
+
 CREATE TABLE Account
 (
 	BankId int,
-	CardId int,
+	UserId int,
+	AccountId int primary key,
 	AccountName varchar(125),
-	SocialStatus varchar(125),
 	AccountBalance decimal(6,2)
 )
+
 CREATE TABLE UserInfo
 (
-	CardId int,
+	UserId int,
+	CityId int,
+	SocialStatus varchar(125),
 	UserName varchar(125),
 	Age int,
-	City varchar(125)
 )
-
-------------------------------------------------Query-1----------------------------------------------
-----Displays a list of banks that have a branch in city X
 GO
-SELECT BankInfo.BankId, BankName, City 
-FROM BankInfo RIGHT JOIN BankBranches ON BankInfo.BankId = BankBranches.BankId 
-WHERE City = 'Brest' 
-ORDER BY BankName
+SELECT  FROM Account
 
-------------------------------------------------Query-2----------------------------------------------
-----Displays a list of cards indicating the name of the owner, balance and the name of the bank
-GO
-SELECT CardInfo.CardId, UserName, CardBalance, BankName
-FROM CardInfo LEFT JOIN UserInfo ON CardInfo.CardId = UserInfo.CardId INNER JOIN BankInfo ON CardInfo.BankId = BankInfo.BankId
---ORDER BY UserCardName
+--------------------------------------------------Query-1----------------------------------------------
+------Displays a list of banks that have a branch in city X
+--GO
+--SELECT BankInfo.BankId, BankName, City 
+--FROM BankInfo RIGHT JOIN BankBranches ON BankInfo.BankId = BankBranches.BankId 
+--WHERE City = 'Brest' 
+--ORDER BY BankName
 
-------------------------------------------------Query-3----------------------------------------------
-----Displays a list of bank accounts where balance doesn't match the sum of the card balance and shows the difference
-GO
-SELECT AccountName, AccountBalance, CardBalance, (AccountBalance - CardBalance) DifferenceVal
-FROM Account JOIN CardInfo ON CardInfo.CardId = Account.CardId
-WHERE AccountBalance != CardBalance
+--------------------------------------------------Query-2----------------------------------------------
+------Displays a list of cards indicating the name of the owner, balance and the name of the bank
+--GO
+--SELECT CardInfo.CardId, UserName, CardBalance, BankName
+--FROM CardInfo LEFT JOIN UserInfo ON CardInfo.CardId = UserInfo.CardId INNER JOIN BankInfo ON CardInfo.BankId = BankInfo.BankId
+----ORDER BY UserCardName
 
-----------------------------------------------------------END----------------------------------------------------------
+--------------------------------------------------Query-3----------------------------------------------
+------Displays a list of bank accounts where balance doesn't match the sum of the card balance and shows the difference
+--GO
+--SELECT AccountName, AccountBalance, CardBalance, (AccountBalance - CardBalance) DifferenceVal
+--FROM Account JOIN CardInfo ON CardInfo.CardId = Account.CardId
+--WHERE AccountBalance != CardBalance
+
+------------------------------------------------------------END----------------------------------------------------------
 
 
 
