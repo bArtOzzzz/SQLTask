@@ -6,15 +6,13 @@ CREATE TABLE BankInfo
 
 	PRIMARY KEY (BankId)
 )
-
-CREATE TABLE BankBranches
+CREATE TABLE City
 (
-	BankId int,
-	BankAdress varchar(125),
+	CityId int not null,
+	City varchar(125),
 
-	FOREIGN KEY (BankId) REFERENCES BankInfo(BankId)
+	PRIMARY KEY (CityId)
 )
-
 CREATE TABLE UserInfo
 (
 	UserId int not null,
@@ -25,27 +23,26 @@ CREATE TABLE UserInfo
 
 	PRIMARY KEY (UserId)
 )
-
-CREATE TABLE City
+CREATE TABLE BankBranches
 (
-	CityId int not null,
-	City varchar(125),
+	BankId int,
+	CityId int,
+	BankAdress varchar(125),
 
-	PRIMARY KEY (CityId)
+	FOREIGN KEY (BankId) REFERENCES BankInfo(BankId),
+	FOREIGN KEY (CityId) REFERENCES City(CityId)
 )
 CREATE TABLE Account
 (
 	AccountId int not null,
 	BankId int,
 	UserId int,
-	--CardId int,
 	AccountName varchar(125),
 	AccountBalance decimal(6,2),
 
 	PRIMARY KEY (AccountId),
 	FOREIGN KEY (BankId) REFERENCES BankInfo(BankId),
-	FOREIGN KEY (UserId) REFERENCES UserInfo(UserId),
-	--FOREIGN KEY (CardId) REFERENCES CardInfo(CardId),
+	FOREIGN KEY (UserId) REFERENCES UserInfo(UserId)
 )
 CREATE TABLE CardInfo
 (
