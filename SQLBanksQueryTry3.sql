@@ -299,111 +299,97 @@ FROM Account INNER JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
 
 ------------------------------------------------Query-7----------------------------------------------
 ----Procedure that safely transfer money from an account to a card of this account using transaction
---GO
---CREATE PROCEDURE TransactionProcedure
---(
---	@TransitAccount int,
---	@FromTransitToCard decimal(6,2)
---)
---AS
---SET NOCOUNT ON
---SET XACT_ABORT ON
---BEGIN TRY
---	BEGIN TRANSACTION;
---	INSERT UserCardInfo(UserCardName, CardBalance) VALUES (@TransitAccount, @FromTransitToCard) 
---	SELECT @TransitAccount TransitAccount, UserCardName, @FromTransitToCard ExpectedAmountCredited, BankTransitAmount, (BankTransitAmount - @FromTransitToCard) TransitOperation, CardBalance, (CardBalance + @FromTransitToCard) AfterTransactionCardBalance
---	FROM UserCardInfo INNER JOIN BankInfo ON @TransitAccount = UserCardInfo.CardId
---	WHERE UserCardInfo.CardId = @TransitAccount AND UserCardInfo.BankId = BankInfo.BankId;  
---	COMMIT TRANSACTION;
---END TRY
---BEGIN CATCH
---	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
---	DECLARE @msg nvarchar(2048) = error_message()
---	RAISERROR (@msg, 16, 1)
---	RETURN 0
---END CATCH
---GO
---EXEC TransactionProcedure 2, 500
+GO
+CREATE PROCEDURE TransactionProcedure
+(
+	@TransitAccount int, @FromTransitToCard decimal(6,2)
+)
+AS
+SET NOCOUNT ON
+SET XACT_ABORT ON
+BEGIN TRY
+	BEGIN TRANSACTION;
+		SELECT @TransitAccount AS TransitAccount, Account.AccountName, @FromTransitToCard AS ExpectedAmountCredited, CardInfo.CardBalance, (CardBalance + @FromTransitToCard) AS AfterTransactionCardBalance
+		FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
+		WHERE CardInfo.CardId = @TransitAccount
+	COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+	DECLARE @msg nvarchar(2048) = error_message()
+	RAISERROR (@msg, 16, 1)
+	RETURN 0
+END CATCH
+GO
+EXEC TransactionProcedure 4, 500
 
 ------------------------------------------------Query-8----------------------------------------------
 -------------------------------------------------------Trigger for card-----------------------------------------------------
---GO
---CREATE TRIGGER UserCardsTrigger ON UserCardInfo
---AFTER INSERT, UPDATE, DELETE AS
------------------------------id of card for transaction--------
---DECLARE @Id int = 1
----------------------------------------------------------------
---	IF EXISTS
---	(
---		SELECT CardBalance 
---		FROM UserCardInfo, UserAccountInfo
---		WHERE TotalCardsBalance > AccountBalance
---	)
---BEGIN
---	RAISERROR ('Sorry, nothing to find', 16, 1)
---	ROLLBACK TRANSACTION
---	RETURN
---END
---ELSE
---	UPDATE UserCardInfo SET CardBalance = TotalCardsBalance WHERE CardId = @Id
---IF EXISTS
---	(
---		SELECT CardBalance 
---		FROM UserCardInfo, UserAccountInfo
---		WHERE TotalCardsBalance < 0
---	)
---BEGIN
---	RAISERROR ('Sorry, nothing to find', 16, 1)
---	ROLLBACK TRANSACTION
---	RETURN
---END
---ELSE
---UPDATE UserCardInfo SET CardBalance = TotalCardsBalance WHERE CardId = @Id;
+GO
+CREATE TRIGGER CardInfoTrigger ON CardInfo
+AFTER UPDATE AS
+IF EXISTS
+(
+	SELECT CardInfo.CardBalance
+	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
+	WHERE CardInfo.CardBalance > Account.AccountBalance
+)
+BEGIN
+	RAISERROR ('Sorry, nothing to find', 16, 1)
+	ROLLBACK TRANSACTION
+	RETURN
+END
+ELSE IF EXISTS
+(
+	SELECT CardInfo.CardBalance
+	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
+	WHERE CardInfo.CardBalance < 0
+)
+BEGIN
+	RAISERROR ('Sorry, nothing to find', 16, 1)
+	ROLLBACK TRANSACTION
+	RETURN
+END;
 
 -------------------------------------------------------Trigger for account-----------------------------------------------------
---GO
---CREATE TRIGGER UserAccountsTrigger ON UserAccountInfo
---AFTER INSERT, UPDATE, DELETE AS
------------------------------id of card for transaction--------
---DECLARE @Id int = 1
----------------------------------------------------------------
---	IF EXISTS
---	(
---		SELECT AccountBalance 
---		FROM UserCardInfo, UserAccountInfo
---		WHERE TotalAccountBalance < CardBalance
---	)
---BEGIN
---	RAISERROR ('Sorry, nothing to find', 16, 1)
---	ROLLBACK TRANSACTION
---	RETURN
---END
---ELSE
---	UPDATE UserAccountInfo SET AccountBalance = TotalAccountBalance WHERE AccountId = @Id
---IF EXISTS
---	(
---		SELECT CardBalance 
---		FROM UserCardInfo, UserAccountInfo
---		WHERE TotalAccountBalance < 0
---	)
---BEGIN
---	RAISERROR ('Sorry, nothing to find', 16, 1)
---	ROLLBACK TRANSACTION
---	RETURN
---END
---ELSE
---UPDATE UserAccountInfo SET AccountBalance = TotalAccountBalance WHERE AccountId = @Id;
+GO
+CREATE TRIGGER AccountTrigger ON Account
+AFTER UPDATE AS
+IF EXISTS
+(
+	SELECT Account.AccountBalance
+	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
+	WHERE Account.AccountBalance < CardInfo.CardBalance
+)
+BEGIN
+	RAISERROR ('Sorry, nothing to find', 16, 1)
+	ROLLBACK TRANSACTION
+	RETURN
+END
+ELSE IF EXISTS
+(
+	SELECT Account.AccountBalance
+	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
+	WHERE Account.AccountBalance < 0
+)
+BEGIN
+	RAISERROR ('Sorry, nothing to find', 16, 1)
+	ROLLBACK TRANSACTION
+	RETURN
+END
 
 --------------------------------------------------Tests for trigger---------------------------------------------
+DROP TRIGGER CardInfoTrigger
+DROP TRIGGER AccountTrigger
 
-----Immitation of transaction for card
---DECLARE @CardBalance decimal(6,2) = -100
---UPDATE UserCardInfo  SET TotalCardsBalance = CardBalance + @CardBalance WHERE CardId = 1
+--Immitation of transaction for card
+DECLARE @CardBalance decimal(6,2) = 10.25
+UPDATE CardInfo  SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 1
 
-----Immitation of transaction for account
---DECLARE @AccountBalance decimal(6,2) = 100
---UPDATE UserAccountInfo  SET TotalAccountBalance = AccountBalance + @AccountBalance WHERE AccountId = 1
+--Immitation of transaction for account
+DECLARE @AccountBalance decimal(6,2) = 100
+UPDATE Account  SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 1
 
-----Table output
---SELECT CardId, UserCardName, CardBalance, TotalCardsBalance , SocialStatus, AccountBalance, TotalAccountBalance
---FROM UserCardInfo INNER JOIN UserAccountInfo ON CardId = AccountId
+--Table output
+SELECT CardId, AccountName, CardBalance, AccountBalance 
+FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
