@@ -236,18 +236,10 @@ FROM CardInfo INNER JOIN Account ON Account.AccountId = CardInfo.AccountId
 --------------------------------------------------Query-3----------------------------------------------
 ------Displays a list of bank accounts where balance doesn't match the sum of the card balance and shows the difference
 GO
-SELECT SUM(CardInfo.CardBalance) AS SumCardBalance
+SELECT Account.AccountName, Account.AccountBalance - SUM(CardInfo.CardBalance) AS SumBalanceVal
 FROM Account INNER JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
-GROUP BY CardInfo.AccountId
-
-SELECT CardInfo.CardBalance - Account.AccountBalance AS SumCardBalance
-FROM Account INNER JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
-GROUP BY CardInfo.AccountId
-
-SELECT SUM(Account.AccountBalance)
-FROM Account 
-GROUP BY Account.AccountId
-
+GROUP BY Account.AccountName, Account.AccountBalance
+HAVING Account.AccountBalance - SUM(CardInfo.CardBalance) != 0
 
 ------------------------------------------------Query-4----------------------------------------------
 ----Display the number of the bank cards for each social status: Group by
