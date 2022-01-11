@@ -267,13 +267,17 @@ CREATE PROCEDURE AddTenDollars
 )
 AS
 BEGIN
-	SELECT Account.AccountName, @AddSomeMoney AS AddMoney, (Account.AccountBalance + @AddSomeMoney) AS AfterAddMoney
+	UPDATE Account
+	SET AccountBalance = AccountBalance + @AddSomeMoney
 	FROM Account INNER JOIN UserInfo ON UserInfo.UserId = Account.UserId
 				 INNER JOIN UserStatus ON UserStatus.SocialStatusId = UserInfo.SocialStatusId
 	WHERE UserStatus.SocialStatus = @SocialStatus
 END
 GO
+
 EXEC AddTenDollars 'Disable', 10
+
+SELECT Account.AccountName, Account.AccountBalance FROM Account
 
 DROP PROCEDURE AddTenDollars
 
@@ -289,16 +293,17 @@ FROM Account INNER JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
 GO
 CREATE PROCEDURE TransactionProcedure
 (
-	@TransitAccount int, @FromTransitToCard decimal(6,2)
+	@TransitCardAccount int, @FromTransitToCard decimal(6,2)
 )
 AS
 SET NOCOUNT ON
 SET XACT_ABORT ON
 BEGIN TRY
 	BEGIN TRANSACTION;
-		SELECT @TransitAccount AS TransitAccount, Account.AccountName, @FromTransitToCard AS ExpectedAmountCredited, CardInfo.CardBalance, (CardBalance + @FromTransitToCard) AS AfterTransactionCardBalance
+		UPDATE CardInfo
+		SET CardBalance = CardInfo.CardBalance + @FromTransitToCard
 		FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
-		WHERE CardInfo.CardId = @TransitAccount
+		WHERE CardInfo.CardId = @TransitCardAccount
 	COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
@@ -308,8 +313,12 @@ BEGIN CATCH
 	RETURN 0
 END CATCH
 GO
-EXEC TransactionProcedure 4, 500
 
+EXEC TransactionProcedure 1, 50
+
+SELECT CardInfo.AccountId, CardInfo.CardBalance FROM CardInfo
+
+DROP PROCEDURE TransactionProcedure
 ------------------------------------------------Query-8----------------------------------------------
 -------------------------------------------------------Trigger for card-----------------------------------------------------
 GO
@@ -317,9 +326,10 @@ CREATE TRIGGER CardInfoTrigger ON CardInfo
 AFTER UPDATE AS
 IF EXISTS
 (
-	SELECT CardInfo.CardBalance
+	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
 	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
-	WHERE CardInfo.CardBalance > Account.AccountBalance
+	GROUP BY CardInfo.CardBalance, Account.AccountBalance
+	HAVING SUM(CardInfo.CardBalance) > Account.AccountBalance
 )
 BEGIN
 	RAISERROR ('Sorry, nothing to find', 16, 1)
@@ -328,9 +338,10 @@ BEGIN
 END
 ELSE IF EXISTS
 (
-	SELECT CardInfo.CardBalance
+	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
 	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
-	WHERE CardInfo.CardBalance < 0
+	GROUP BY CardInfo.CardBalance
+	HAVING SUM(CardInfo.CardBalance) < 0
 )
 BEGIN
 	RAISERROR ('Sorry, nothing to find', 16, 1)
@@ -344,9 +355,10 @@ CREATE TRIGGER AccountTrigger ON Account
 AFTER UPDATE AS
 IF EXISTS
 (
-	SELECT Account.AccountBalance
+	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
 	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
-	WHERE Account.AccountBalance < CardInfo.CardBalance
+	GROUP BY CardInfo.CardBalance, Account.AccountBalance
+	HAVING Account.AccountBalance < SUM(CardInfo.CardBalance)
 )
 BEGIN
 	RAISERROR ('Sorry, nothing to find', 16, 1)
@@ -355,9 +367,10 @@ BEGIN
 END
 ELSE IF EXISTS
 (
-	SELECT Account.AccountBalance
+	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
 	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
-	WHERE Account.AccountBalance < 0
+	GROUP BY CardInfo.CardBalance, Account.AccountBalance
+	HAVING Account.AccountBalance < 0
 )
 BEGIN
 	RAISERROR ('Sorry, nothing to find', 16, 1)
@@ -369,15 +382,14 @@ END
 DROP TRIGGER CardInfoTrigger
 DROP TRIGGER AccountTrigger
 
-DROP PROCEDURE TransactionProcedure
 
 --Immitation of transaction for card
-DECLARE @CardBalance decimal(6,2) = 10.25
-UPDATE CardInfo  SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 1
+DECLARE @CardBalance decimal(6,2) = -100
+UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 1
 
 --Immitation of transaction for account
-DECLARE @AccountBalance decimal(6,2) = 100
-UPDATE Account  SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 1
+DECLARE @AccountBalance decimal(6,2) = -10
+UPDATE Account SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 1
 
 --Table output
 SELECT CardId, AccountName, CardBalance, AccountBalance 
