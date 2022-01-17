@@ -2,7 +2,7 @@ USE master
 GO
 CREATE TABLE BankInfo
 (
-	BankId int not null,
+	BankId int identity(1,1) not null,
 	BankName varchar(55),
 
 	PRIMARY KEY (BankId)
@@ -10,7 +10,7 @@ CREATE TABLE BankInfo
 GO
 CREATE TABLE City
 (
-	CityId int not null,
+	CityId int identity(1,1) not null,
 	CityName varchar(125),
 
 	PRIMARY KEY (CityId)
@@ -18,7 +18,7 @@ CREATE TABLE City
 GO
 CREATE TABLE UserStatus
 (
-	SocialStatusId int not null,
+	SocialStatusId int identity(1,1) not null,
 	SocialStatus varchar(125)
 
 	PRIMARY KEY(SocialStatusId)
@@ -26,7 +26,7 @@ CREATE TABLE UserStatus
 GO
 CREATE TABLE UserInfo
 (
-	UserId int not null,
+	UserId int identity(1,1) not null,
 	CityId int,
 	FirstName varchar(125),
 	LastName varchar(125),
@@ -34,7 +34,8 @@ CREATE TABLE UserInfo
 	Age int,
 
 	PRIMARY KEY (UserId),
-	FOREIGN KEY (SocialStatusId) REFERENCES UserStatus(SocialStatusId)
+	FOREIGN KEY (SocialStatusId) REFERENCES UserStatus(SocialStatusId),
+	FOREIGN KEY (CityId) REFERENCES City(CityId)
 )
 GO
 CREATE TABLE BankBranches
@@ -49,7 +50,7 @@ CREATE TABLE BankBranches
 GO
 CREATE TABLE Account
 (
-	AccountId int not null,
+	AccountId int identity(1,1) not null,
 	BankId int,
 	UserId int,
 	AccountName varchar(125),
@@ -62,160 +63,134 @@ CREATE TABLE Account
 GO
 CREATE TABLE CardInfo
 (
-	CardId int not null,
+	CardId int identity(1,1) not null,
 	AccountId int,
 	CardBalance decimal(6,2),
 
 	PRIMARY KEY (CardId),
 	FOREIGN KEY (AccountId) REFERENCES Account(AccountId)
 )
-GO
-INSERT BankInfo
-	  select 1, 'Alpha-Bank'
-union select 2, 'Belinvestbank'
-union select 3, 'Technobank'
-union select 4, 'BelWeb'
-union select 5, 'MTBank'
-union select 6, 'Belarusbank'
-GO
-INSERT City
-	  select 1, 'Gomel'
-union select 2, 'Brest'
-union select 3, 'Grodno'
-union select 4, 'Mogilev'
-union select 5, 'Vitebsk'
-GO
-INSERT UserStatus
-	  select 1, 'Student'
-union select 2, 'Worker'
-union select 3, 'Pensioner'
-union select 4, 'Disable'
-GO
-INSERT UserInfo
-	  select 1,  1, 'Tikhomirova',	'Elizabeth', 1,	18
-union select 2,  1, 'Smirnov',		'Maksim',	 2,	26
-union select 3,  2, 'Kudryashov',	'Pavel',	 2,	23
-union select 4,  4, 'Kupriyanov',	'Vladimir',	 1,	20
-union select 5,  5, 'Zhdanov',		'Miron',	 1,	21
-union select 6,  2, 'Shevelev',		'Ilya',		 2,	37
-union select 7,  3, 'Krasnov',		'Gregory',   3,	68
-union select 8,  1, 'Sokolova',		'Ekaterina', 2,	30
-union select 9,  1, 'Stepanova',	'Fatima',	 3,	66
-union select 10, 2, 'Sokolov',		'Vladimir',	 2,	42
-union select 11, 3, 'Ivanova',		'Faith',	 4,	51
-union select 12, 5, 'Filippova',	'Hope',		 3,	72
-union select 13, 1, 'Bespalova',	'Ekaterina', 2,	22
-union select 14, 1, 'Galkin',		'Savva',	 2,	25
-union select 15, 2, 'Popov',		'Alexander', 3,	62
-union select 16, 3, 'Novikov',		'Ibrahim',	 2,	33
-union select 17, 4, 'Smirnov',		'Alexander', 3,	71
-union select 18, 5, 'Tkachev',		'Victor',	 4,	44
-union select 19, 3, 'Zakharov',		'Adam',		 4,	39
-union select 20, 1, 'Prokofiev',	'Bilal',	 2,	28
-GO
-INSERT BankBranches
-	  select 1, 1, 'Any adress'
-union select 2, 1, 'Any adress'
-union select 3, 1, 'Any adress'
-union select 4, 1, 'Any adress'
-union select 5, 1, 'Any adress'
-union select 6, 1, 'Any adress'
 
-union select 1, 2, 'Any adress'
-union select 2, 2, 'Any adress'
-union select 3, 2, 'Any adress'
+INSERT INTO BankInfo VALUES('Alpha-Bank')
+INSERT INTO BankInfo VALUES('Belinvestbank')
+INSERT INTO BankInfo VALUES('Technobank')
+INSERT INTO BankInfo VALUES('BelWeb')
+INSERT INTO BankInfo VALUES('MTBank')
+INSERT INTO BankInfo VALUES('Belarusbank')
 
-union select 4, 3, 'Any adress'
-union select 5, 3, 'Any adress'
-union select 1, 3, 'Any adress'
-union select 3, 3, 'Any adress'
+INSERT INTO City VALUES('Gomel')
+INSERT INTO City VALUES('Brest')
+INSERT INTO City VALUES('Grodno')
+INSERT INTO City VALUES('Mogilev')
+INSERT INTO City VALUES('Vitebsk')
 
-union select 1, 4, 'Any adress'
-union select 2, 4, 'Any adress'
-union select 3, 4, 'Any adress'
-union select 4, 4, 'Any adress'
-union select 5, 4, 'Any adress'
-union select 6, 4, 'Any adress'
+INSERT INTO UserStatus VALUES('Student')
+INSERT INTO UserStatus VALUES('Worker')
+INSERT INTO UserStatus VALUES('Pensioner')
+INSERT INTO UserStatus VALUES('Disable')
+INSERT INTO UserStatus VALUES('Test')
+INSERT INTO UserStatus VALUES('Test3333')
+INSERT INTO UserStatus VALUES('Test3567333')
+INSERT INTO UserStatus VALUES('Test330033')
 
-union select 5, 5, 'Any adress'
-union select 6, 5, 'Any adress'
-GO
-INSERT Account
-	  select  1, 1,  1, 'SomeEmail_1@gmail.com', 100.25
-union select  2, 2,  2, 'SomeEmail_2@gmail.com', 1500
-union select  3, 3,  3, 'SomeEmail_3@gmail.com', 120.30
-union select  4, 2,  4, 'SomeEmail_4@gmail.com', 755.35
-union select  5, 1,  5, 'SomeEmail_5@gmail.com', 730
-union select  6, 1,  6, 'SomeEmail_6@gmail.com', 390
-union select  7, 1,  7, 'SomeEmail_7@gmail.com', 115.15
-union select  8, 1,  8, 'SomeEmail_8@gmail.com', 855.15
-union select  9, 2,  9, 'SomeEmail_9@gmail.com', 230.30
-union select 10, 3, 10, 'SomeEmail_10@gmail.com', 150
-union select 11, 2, 11, 'SomeEmail_11@gmail.com', 670
-union select 12, 1, 12, 'SomeEmail_12@gmail.com', 125
-union select 13, 4, 13, 'SomeEmail_13@gmail.com', 345
-union select 14, 1, 14, 'SomeEmail_14@gmail.com', 560
-union select 15, 1, 15, 'SomeEmail_15@gmail.com', 371.35
-union select 16, 2, 16, 'SomeEmail_16@gmail.com', 20
-union select 17, 3, 17, 'SomeEmail_17@gmail.com', 100
-union select 18, 1, 18, 'SomeEmail_18@gmail.com', 65
-union select 19, 1, 19, 'SomeEmail_19@gmail.com', 35
-union select 20, 1, 20, 'SomeEmail_20@gmail.com', 1000
-GO
-INSERT CardInfo
-	  select 1, 1, 90
-union select 2, 1, 10
+INSERT INTO UserInfo VALUES(1, 'Tikhomirova',	'Elizabeth', 1,	18)
+INSERT INTO UserInfo VALUES(1, 'Smirnov',		'Maksim',	 2,	26)
+INSERT INTO UserInfo VALUES(2, 'Kudryashov',	'Pavel',	 2,	23)
+INSERT INTO UserInfo VALUES(4, 'Kupriyanov',	'Vladimir',	 1,	20)
+INSERT INTO UserInfo VALUES(5, 'Zhdanov',		'Miron',	 1,	21)
+INSERT INTO UserInfo VALUES(2, 'Shevelev',		'Ilya',		 2,	37)
+INSERT INTO UserInfo VALUES(3, 'Krasnov',		'Gregory',   3,	68)
+INSERT INTO UserInfo VALUES(1, 'Sokolova',		'Ekaterina', 2,	30)
+INSERT INTO UserInfo VALUES(1, 'Stepanova',		'Fatima',	 3,	66)
+INSERT INTO UserInfo VALUES(2, 'Sokolov',		'Vladimir',	 2,	42)
+INSERT INTO UserInfo VALUES(3, 'Ivanova',		'Faith',	 4,	51)
+INSERT INTO UserInfo VALUES(5, 'Filippova',		'Hope',		 3,	72)
+INSERT INTO UserInfo VALUES(1, 'Bespalova',		'Ekaterina', 2,	22)
+INSERT INTO UserInfo VALUES(1, 'Galkin',		'Savva',	 2,	25)
+INSERT INTO UserInfo VALUES(2, 'Popov',			'Alexander', 3,	62)
+INSERT INTO UserInfo VALUES(3, 'Novikov',		'Ibrahim',	 2,	33)
+INSERT INTO UserInfo VALUES(4, 'Smirnov',		'Alexander', 3,	71)
+INSERT INTO UserInfo VALUES(5, 'Tkachev',		'Victor',	 4,	44)
+INSERT INTO UserInfo VALUES(3, 'Zakharov',		'Adam',		 4,	39)
+INSERT INTO UserInfo VALUES(1, 'Prokofiev',		'Bilal',	 2,	28)
 
-union select 3, 2, 1500
-union select 4, 2, 0
+INSERT INTO BankBranches VALUES(1, 1, 'Any adress')
+INSERT INTO BankBranches VALUES(2, 1, 'Any adress')
+INSERT INTO BankBranches VALUES(3, 1, 'Any adress')
+INSERT INTO BankBranches VALUES(4, 1, 'Any adress')
+INSERT INTO BankBranches VALUES(5, 1, 'Any adress')
+INSERT INTO BankBranches VALUES(6, 1, 'Any adress')
+INSERT INTO BankBranches VALUES(1, 2, 'Any adress')
+INSERT INTO BankBranches VALUES(2, 2, 'Any adress')
+INSERT INTO BankBranches VALUES(3, 2, 'Any adress')
+INSERT INTO BankBranches VALUES(4, 3, 'Any adress')
+INSERT INTO BankBranches VALUES(5, 3, 'Any adress')
+INSERT INTO BankBranches VALUES(1, 3, 'Any adress')
+INSERT INTO BankBranches VALUES(3, 3, 'Any adress')
+INSERT INTO BankBranches VALUES(1, 4, 'Any adress')
+INSERT INTO BankBranches VALUES(2, 4, 'Any adress')
+INSERT INTO BankBranches VALUES(3, 4, 'Any adress')
+INSERT INTO BankBranches VALUES(4, 4, 'Any adress')
+INSERT INTO BankBranches VALUES(5, 4, 'Any adress')
+INSERT INTO BankBranches VALUES(6, 4, 'Any adress')
+INSERT INTO BankBranches VALUES(5, 5, 'Any adress')
+INSERT INTO BankBranches VALUES(6, 5, 'Any adress')
 
-union select 5, 3, 0.20
+INSERT INTO Account VALUES (1,  1, 'SomeEmail_1@gmail.com', 100.25)
+INSERT INTO Account VALUES (2,  2, 'SomeEmail_2@gmail.com', 1500)
+INSERT INTO Account VALUES (3,  3, 'SomeEmail_3@gmail.com', 120.30)
+INSERT INTO Account VALUES (2,  4, 'SomeEmail_4@gmail.com', 755.35)
+INSERT INTO Account VALUES (1,  5, 'SomeEmail_5@gmail.com', 730)
+INSERT INTO Account VALUES (1,  6, 'SomeEmail_6@gmail.com', 390)
+INSERT INTO Account VALUES (1,  7, 'SomeEmail_7@gmail.com', 115.15)
+INSERT INTO Account VALUES (1,  8, 'SomeEmail_8@gmail.com', 855.15)
+INSERT INTO Account VALUES (2,  9, 'SomeEmail_9@gmail.com', 230.30)
+INSERT INTO Account VALUES (2, 10, 'SomeEmail_10@gmail.com', 230.30)
+INSERT INTO Account VALUES (3, 11, 'SomeEmail_11@gmail.com', 150)
+INSERT INTO Account VALUES (2, 12, 'SomeEmail_12@gmail.com', 670)
+INSERT INTO Account VALUES (1, 13, 'SomeEmail_13@gmail.com', 700)
+INSERT INTO Account VALUES (4, 14, 'SomeEmail_14@gmail.com', 620)
+INSERT INTO Account VALUES (1, 15, 'SomeEmail_15@gmail.com', 560)
+INSERT INTO Account VALUES (1, 16, 'SomeEmail_16@gmail.com', 371.35)
+INSERT INTO Account VALUES (2, 17, 'SomeEmail_17@gmail.com', 150.50)
+INSERT INTO Account VALUES (3, 18, 'SomeEmail_18@gmail.com', 100)
+INSERT INTO Account VALUES (1, 19, 'SomeEmail_19@gmail.com', 65)
+INSERT INTO Account VALUES (1, 20, 'SomeEmail_20@gmail.com', 1030)
 
-union select 6, 4, 110
-union select 7, 4, 320
-
-union select 8, 5, 730
-
-union select 9, 6, 20.40
-union select 10, 6, 355
-
-union select 11, 7, 115.15
-union select 12, 7, 0
-
-union select 13, 8, 345.90
-union select 14, 8, 120
-union select 15, 8, 210.35
-
-union select 16, 9, 230.30
-
-union select 17, 10, 150
-
-union select 18, 11, 180
-union select 19, 11, 345
-
-union select 20, 12, 120
-
-union select 21, 13, 120.45
-union select 22, 13, 155.15
-
-union select 23, 14, 20
-union select 24, 14, 325.35
-union select 25, 14, 140.40
-
-union select 26, 15, 370.55
-union select 27, 15, 0.80
-
-union select 28, 16, 20
-
-union select 29, 17, 15.10
-union select 30, 17, 40.75
-
-union select 31, 18, 25.60
-
-union select 32, 19, 35
-
-union select 33, 20, 700
-union select 34, 20, 210.20
+INSERT INTO CardInfo VALUES (1, 90)
+INSERT INTO CardInfo VALUES (1, 10)
+INSERT INTO CardInfo VALUES (2, 1500)
+INSERT INTO CardInfo VALUES (2, 0)
+INSERT INTO CardInfo VALUES (3, 0.20)
+INSERT INTO CardInfo VALUES (4, 110)
+INSERT INTO CardInfo VALUES (4, 320)
+INSERT INTO CardInfo VALUES (5, 730)
+INSERT INTO CardInfo VALUES (6, 20.40)
+INSERT INTO CardInfo VALUES (6, 355)
+INSERT INTO CardInfo VALUES (7, 115.15)
+INSERT INTO CardInfo VALUES (7, 0)
+INSERT INTO CardInfo VALUES (8, 345.90)
+INSERT INTO CardInfo VALUES (8, 120)
+INSERT INTO CardInfo VALUES (8, 210.35)
+INSERT INTO CardInfo VALUES (9, 230.30)
+INSERT INTO CardInfo VALUES (10, 150)
+INSERT INTO CardInfo VALUES (11, 40)
+INSERT INTO CardInfo VALUES (11, 15)
+INSERT INTO CardInfo VALUES (12, 120)
+INSERT INTO CardInfo VALUES (13, 120.45)
+INSERT INTO CardInfo VALUES (13, 155.15)
+INSERT INTO CardInfo VALUES (14, 20)
+INSERT INTO CardInfo VALUES (14, 325.35)
+INSERT INTO CardInfo VALUES (14, 140.40)
+INSERT INTO CardInfo VALUES (15, 370.55)
+INSERT INTO CardInfo VALUES (15, 0.80)
+INSERT INTO CardInfo VALUES (16, 20)
+INSERT INTO CardInfo VALUES (17, 15.10)
+INSERT INTO CardInfo VALUES (17, 40.75)
+INSERT INTO CardInfo VALUES (18, 25.60)
+INSERT INTO CardInfo VALUES (19, 35) 
+INSERT INTO CardInfo VALUES (20, 700)
+INSERT INTO CardInfo VALUES (20, 210.20)
 
 --------------------------------------------------Query-1----------------------------------------------
 ------Displays a list of banks that have a branch in city X
@@ -236,18 +211,20 @@ FROM CardInfo INNER JOIN Account ON Account.AccountId = CardInfo.AccountId
 --------------------------------------------------Query-3----------------------------------------------
 ------Displays a list of bank accounts where balance doesn't match the sum of the card balance and shows the difference
 GO
-SELECT Account.AccountName, Account.AccountBalance - SUM(CardInfo.CardBalance) AS SumBalanceVal
-FROM Account INNER JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
+SELECT Account.AccountName, Account.AccountBalance - SUM(CardInfo.CardBalance) AS SumBalanceVal, Account.AccountBalance
+FROM Account LEFT JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
 GROUP BY Account.AccountName, Account.AccountBalance
-HAVING Account.AccountBalance - SUM(CardInfo.CardBalance) != 0
+HAVING Account.AccountBalance - SUM(CardInfo.CardBalance) != 0 OR AccountBalance > 0
+
+INSERT INTO UserInfo VALUES(1, 'Tikhomirova',	'Elizabeth', 1,	18)
+INSERT INTO Account VALUES (1,  1, 'SomeEmail_1@gmail.com', 100.25)
 
 ------------------------------------------------Query-4----------------------------------------------
 ----Display the number of the bank cards for each social status: Group by
 GO
-SELECT UserStatus.SocialStatus, COUNT(UserStatus.SocialStatus) AS CountCards
-FROM UserStatus INNER JOIN UserInfo ON UserInfo.SocialStatusId = UserStatus.SocialStatusId
+SELECT UserStatus.SocialStatus, COUNT(UserInfo.SocialStatusId) AS CountCards
+FROM UserStatus LEFT JOIN UserInfo ON UserInfo.SocialStatusId = UserStatus.SocialStatusId
 GROUP BY UserStatus.SocialStatus
-ORDER BY CountCards
 
 ----Display the number of the bank cards for each social status: Subquery
 GO
@@ -285,15 +262,16 @@ DROP PROCEDURE AddTenDollars
 ----Displays a list of available funds for each client to transfer funds to any card
 ----Available transfer amount for each account on an accrual basis
 GO
-SELECT Account.AccountName, SUM(Account.AccountBalance - CardInfo.CardBalance) OVER(PARTITION BY Account.AccountId ORDER BY CardInfo.CardBalance) AS AvailableTransferAmount
-FROM Account INNER JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
+SELECT Account.AccountName, Account.AccountBalance - SUM(CardInfo.CardBalance) AS CardsSumBalance
+FROM Account INNER JOIN CardInfo ON Account.AccountId = CardInfo.AccountId
+GROUP BY Account.AccountName, CardInfo.AccountId, Account.AccountBalance
 
 ------------------------------------------------Query-7----------------------------------------------
 ----Procedure that safely transfer money from an account to a card of this account using transaction
 GO
 CREATE PROCEDURE TransactionProcedure
 (
-	@TransitCardAccount int, @FromTransitToCard decimal(6,2)
+	@TransitCardAccount int, @TransitAccount int, @FromTransitToCard decimal(6,2)
 )
 AS
 SET NOCOUNT ON
@@ -303,7 +281,12 @@ BEGIN TRY
 		UPDATE CardInfo
 		SET CardBalance = CardInfo.CardBalance + @FromTransitToCard
 		FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
-		WHERE CardInfo.CardId = @TransitCardAccount
+		WHERE CardInfo.CardId = @TransitCardAccount AND CardInfo.CardBalance <= Account.AccountBalance
+
+		UPDATE Account
+		SET AccountBalance = Account.AccountBalance - @FromTransitToCard
+		FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
+		WHERE Account.AccountId = @TransitAccount AND Account.AccountBalance >= @FromTransitToCard AND Account.AccountBalance > CardInfo.CardBalance
 	COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
@@ -314,16 +297,18 @@ BEGIN CATCH
 END CATCH
 GO
 
-EXEC TransactionProcedure 1, 50
+EXEC TransactionProcedure 4, 2, 50
 
-SELECT CardInfo.AccountId, CardInfo.CardBalance FROM CardInfo
+SELECT CardInfo.CardId, CardInfo.CardBalance, Account.AccountId, Account.AccountBalance
+FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
 
 DROP PROCEDURE TransactionProcedure
 ------------------------------------------------Query-8----------------------------------------------
 -------------------------------------------------------Trigger for card-----------------------------------------------------
 GO
-CREATE TRIGGER CardInfoTrigger ON CardInfo
+CREATE TRIGGER CardInfoTrigger ON CardInfo 
 AFTER UPDATE AS
+SET NOCOUNT ON
 IF EXISTS
 (
 	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
@@ -377,15 +362,19 @@ BEGIN
 	ROLLBACK TRANSACTION
 	RETURN
 END
-
 --------------------------------------------------Tests for trigger---------------------------------------------
 DROP TRIGGER CardInfoTrigger
 DROP TRIGGER AccountTrigger
 
 
 --Immitation of transaction for card
-DECLARE @CardBalance decimal(6,2) = -100
+DECLARE @CardBalance decimal(6,2) = 20
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 1
+UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 2
+UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 3
+UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 4
+UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 5
+UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 6
 
 --Immitation of transaction for account
 DECLARE @AccountBalance decimal(6,2) = -10
