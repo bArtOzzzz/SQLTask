@@ -211,13 +211,10 @@ FROM CardInfo INNER JOIN Account ON Account.AccountId = CardInfo.AccountId
 --------------------------------------------------Query-3----------------------------------------------
 ------Displays a list of bank accounts where balance doesn't match the sum of the card balance and shows the difference
 GO
-SELECT Account.AccountName, Account.AccountBalance - SUM(CardInfo.CardBalance) AS SumBalanceVal, Account.AccountBalance
+SELECT Account.AccountName, Account.AccountBalance - SUM(ISNULL(CardInfo.CardBalance, 0)) as SumBalanceVal, Account.AccountBalance
 FROM Account LEFT JOIN CardInfo ON CardInfo.AccountId = Account.AccountId
 GROUP BY Account.AccountName, Account.AccountBalance
 HAVING Account.AccountBalance - SUM(CardInfo.CardBalance) != 0 OR AccountBalance > 0
-
-INSERT INTO UserInfo VALUES(1, 'Tikhomirova',	'Elizabeth', 1,	18)
-INSERT INTO Account VALUES (1,  1, 'SomeEmail_1@gmail.com', 100.25)
 
 ------------------------------------------------Query-4----------------------------------------------
 ----Display the number of the bank cards for each social status: Group by
@@ -306,120 +303,6 @@ DROP PROCEDURE TransactionProcedure
 ------------------------------------------------Query-8----------------------------------------------
 -------------------------------------------------------Trigger for card-----------------------------------------------------
 GO
-<<<<<<< Updated upstream
-CREATE TRIGGER CardInfoTrigger ON CardInfo
-	AFTER UPDATE, INSERT, DELETE
-AS IF UPDATE(CardBalance)
-	BEGIN
-		SET XACT_ABORT, NOCOUNT ON
-
-		IF UPDATE (CardBalance)
-		BEGIN
-			IF (SELECT SUM(CardBalance) FROM inserted) > 0
-				BEGIN
-					PRINT 'Good transaction!'
-				END
-			ELSE IF (SELECT SUM(CardBalance) FROM inserted) < 0
-				BEGIN
-					PRINT 'Bad transaction!'
-					UPDATE CardInfo SET CardBalance = (SELECT CardBalance FROM deleted) WHERE CardId = (SELECT CardId FROM deleted)
-				END
-
-			IF (SELECT SUM(CardInfo.CardBalance) FROM inserted INNER JOIN CardInfo ON CardInfo.AccountId = inserted.AccountId) < (SELECT AccountBalance FROM Account JOIN inserted ON inserted.AccountId = Account.AccountId)
-				BEGIN
-					PRINT 'Good transaction!'
-				END
-			ELSE IF (SELECT SUM(CardInfo.CardBalance) FROM inserted INNER JOIN CardInfo ON CardInfo.AccountId = inserted.AccountId) > (SELECT AccountBalance FROM Account JOIN inserted ON inserted.AccountId = Account.AccountId)
-				BEGIN
-					PRINT 'Bad transaction!'
-					UPDATE CardInfo SET CardBalance = (SELECT CardBalance FROM deleted) WHERE CardId = (SELECT CardId FROM deleted)
-				END
-		END
-	END
-
---CREATE TRIGGER CardInfoTrigger ON CardInfo 
---	AFTER UPDATE, INSERT, DELETE
---AS IF UPDATE(CardBalance)
---	BEGIN
---		SET XACT_ABORT, NOCOUNT ON
-
---		IF EXISTS
---		(
---			SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
---			FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
---			GROUP BY CardInfo.CardBalance, Account.AccountBalance
---			HAVING SUM(CardInfo.CardBalance) > Account.AccountBalance
---		)
---		BEGIN
---			RAISERROR ('Sorry, nothing to find', 16, 1)
---			ROLLBACK TRANSACTION
---			RETURN
---		END
---		ELSE IF EXISTS
---		(
---			SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
---			FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
---			GROUP BY CardInfo.CardBalance
---			HAVING SUM(CardInfo.CardBalance) < 0
---		)
---		BEGIN
---			RAISERROR ('Sorry, nothing to find', 16, 1)
---			ROLLBACK TRANSACTION
---			RETURN
---		END
---	END;
-
--------------------------------------------------------Trigger for account-----------------------------------------------------
-GO
-CREATE TRIGGER CardInfoTrigger ON Account 
-	AFTER UPDATE, INSERT, DELETE
-AS IF UPDATE(AccountBalance)
-	BEGIN
-		SET XACT_ABORT, NOCOUNT ON
-
-		IF UPDATE (AccountBalance)
-		BEGIN
-			IF (SELECT AccountBalance FROM inserted) < 0
-				BEGIN
-					PRINT 'Bad transaction!'
-					UPDATE Account SET AccountBalance = (SELECT AccountBalance FROM deleted) WHERE AccountId = (SELECT AccountId FROM deleted)
-				END
-
-			IF (SELECT SUM(CardInfo.CardBalance) FROM inserted INNER JOIN CardInfo ON CardInfo.AccountId = inserted.AccountId) > (SELECT Account.AccountBalance FROM Account JOIN inserted ON inserted.AccountId = Account.AccountId)
-				BEGIN
-					PRINT 'Bad transaction!'
-					UPDATE Account SET AccountBalance = (SELECT AccountBalance FROM deleted) WHERE AccountId = (SELECT AccountId FROM deleted)
-				END
-		END
-	END
-
---CREATE TRIGGER AccountTrigger ON Account
---AFTER UPDATE AS
---IF EXISTS
---(
---	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
---	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
---	GROUP BY CardInfo.CardBalance, Account.AccountBalance
---	HAVING Account.AccountBalance < SUM(CardInfo.CardBalance)
---)
---BEGIN
---	RAISERROR ('Sorry, nothing to find', 16, 1)
---	ROLLBACK TRANSACTION
---	RETURN
---END
---ELSE IF EXISTS
---(
---	SELECT CardInfo.CardBalance, SUM(CardInfo.CardBalance) AS SumBalanceVal
---	FROM CardInfo INNER JOIN Account ON CardInfo.AccountId = Account.AccountId
---	GROUP BY CardInfo.CardBalance, Account.AccountBalance
---	HAVING Account.AccountBalance < 0
---)
---BEGIN
---	RAISERROR ('Sorry, nothing to find', 16, 1)
---	ROLLBACK TRANSACTION
---	RETURN
---END
-=======
 CREATE TRIGGER CardInfoTrigger ON CardInfo 
 	FOR UPDATE
 AS 
@@ -459,14 +342,13 @@ AS
 				RETURN
 			END
 	END;
->>>>>>> Stashed changes
 --------------------------------------------------Tests for trigger---------------------------------------------
 DROP TRIGGER CardInfoTrigger
 DROP TRIGGER AccountTrigger
 
 
 --Immitation of transaction for card
-DECLARE @CardBalance decimal(6,2) = 20
+DECLARE @CardBalance decimal(6,2) = -10
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 1
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 2
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 3
