@@ -306,6 +306,7 @@ DROP PROCEDURE TransactionProcedure
 ------------------------------------------------Query-8----------------------------------------------
 -------------------------------------------------------Trigger for card-----------------------------------------------------
 GO
+<<<<<<< Updated upstream
 CREATE TRIGGER CardInfoTrigger ON CardInfo
 	AFTER UPDATE, INSERT, DELETE
 AS IF UPDATE(CardBalance)
@@ -418,6 +419,47 @@ AS IF UPDATE(AccountBalance)
 --	ROLLBACK TRANSACTION
 --	RETURN
 --END
+=======
+CREATE TRIGGER CardInfoTrigger ON CardInfo 
+	FOR UPDATE
+AS 
+	IF UPDATE(CardBalance)
+	BEGIN
+		IF (SELECT SUM(CardBalance) FROM inserted) < 0
+			BEGIN
+				PRINT 'Bad transaction!'
+				ROLLBACK TRANSACTION
+				RETURN
+			END
+		ELSE IF (SELECT SUM(CardBalance) FROM inserted) > (SELECT AccountBalance FROM Account JOIN inserted ON inserted.AccountId = Account.AccountId)
+			BEGIN
+				PRINT 'Bad transaction!'
+				ROLLBACK TRANSACTION
+				RETURN
+			END
+	END;
+
+-------------------------------------------------------Trigger for account-----------------------------------------------------
+GO
+CREATE TRIGGER AccountTrigger ON Account 
+	FOR UPDATE
+AS 
+	IF UPDATE(AccountBalance)
+	BEGIN
+		IF (SELECT SUM(AccountBalance) FROM inserted) < 0
+			BEGIN
+				PRINT 'Bad transaction!'
+				ROLLBACK TRANSACTION
+				RETURN
+			END
+		ELSE IF (SELECT SUM(CardInfo.CardBalance) FROM inserted INNER JOIN CardInfo ON CardInfo.AccountId = inserted.AccountId) > (SELECT Account.AccountBalance FROM Account JOIN inserted ON inserted.AccountId = Account.AccountId)
+			BEGIN
+				PRINT 'Bad transaction!'
+				ROLLBACK TRANSACTION
+				RETURN
+			END
+	END;
+>>>>>>> Stashed changes
 --------------------------------------------------Tests for trigger---------------------------------------------
 DROP TRIGGER CardInfoTrigger
 DROP TRIGGER AccountTrigger
@@ -430,7 +472,6 @@ UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE Card
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 3
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 4
 UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 5
-UPDATE CardInfo SET CardBalance = CardInfo.CardBalance + @CardBalance WHERE CardInfo.CardId = 6
 
 --Immitation of transaction for account
 DECLARE @AccountBalance decimal(6,2) = -0.25
@@ -439,7 +480,6 @@ UPDATE Account SET AccountBalance = Account.AccountBalance + @AccountBalance WHE
 UPDATE Account SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 3
 UPDATE Account SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 4
 UPDATE Account SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 5
-UPDATE Account SET AccountBalance = Account.AccountBalance + @AccountBalance WHERE AccountId = 6
 
 --Table output
 SELECT CardId, AccountName, CardBalance, AccountBalance
